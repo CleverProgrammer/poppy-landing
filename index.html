@@ -3,610 +3,676 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poppy AI — Hero Section Showcase</title>
+<title>Poppy AI — 10 Hero Designs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Share+Tech+Mono&family=Quicksand:wght@400;500;600;700&family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=VT323&family=Outfit:wght@100;200;300;400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Share+Tech+Mono&family=Quicksand:wght@400;600;700&family=Archivo+Black&family=Barlow:wght@300;400;500;700;900&family=VT323&family=Outfit:wght@300;400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Syne:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; }
 
 /* SIDEBAR */
 .sidebar {
-  position: fixed; left: 0; top: 0; width: 220px; height: 100vh;
-  background: #111; color: #888; z-index: 1000;
-  display: flex; flex-direction: column; padding: 20px 0;
-  font-family: 'Space Grotesk', sans-serif; font-size: 14px;
-  border-right: 1px solid #222;
-  transition: transform 0.3s ease;
+  position: fixed; top: 0; left: 0; width: 240px; height: 100vh;
+  background: #1a1a1f; z-index: 1000; display: flex; flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  border-right: 1px solid #2a2a30;
 }
-.sidebar-title {
-  padding: 0 20px 16px; font-size: 11px; text-transform: uppercase;
-  letter-spacing: 2px; color: #555; border-bottom: 1px solid #222; margin-bottom: 8px;
+.sidebar-header {
+  padding: 20px 16px 12px; border-bottom: 1px solid #2a2a30;
+  color: #fff; font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase; opacity: 0.6;
 }
-.sidebar a {
-  display: block; padding: 10px 20px; color: #777; text-decoration: none;
-  transition: all 0.15s ease; cursor: pointer; border-left: 3px solid transparent;
+.sidebar-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.sidebar-item {
+  padding: 10px 16px; cursor: pointer; color: #999; font-size: 13px;
+  transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+  border-left: 3px solid transparent;
 }
-.sidebar a:hover { color: #fff; background: #1a1a1a; }
-.sidebar a.active { color: #fff; border-left-color: #ff4f9a; background: #1a1a1a; }
+.sidebar-item:hover { color: #fff; background: rgba(255,255,255,0.04); }
+.sidebar-item.active {
+  color: #fff; background: rgba(255,255,255,0.07);
+  border-left-color: #7c5cfc;
+}
+.sidebar-item .num {
+  font-size: 11px; font-weight: 700; color: #555; min-width: 18px;
+  height: 18px; display: flex; align-items: center; justify-content: center;
+  border-radius: 4px; background: rgba(255,255,255,0.05);
+}
+.sidebar-item.active .num { color: #7c5cfc; background: rgba(124,92,252,0.15); }
 
-/* MAIN CONTENT */
-.main { margin-left: 220px; height: 100vh; position: relative; overflow: hidden; }
+/* MAIN */
+.main { margin-left: 240px; height: 100vh; position: relative; overflow: hidden; }
 .hero-section {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease;
+  opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
   overflow-y: auto;
 }
-.hero-section.active { opacity: 1; visibility: visible; }
+.hero-section.active { opacity: 1; pointer-events: all; }
 
-/* MOBILE NAV */
-.mobile-toggle {
-  display: none; position: fixed; top: 12px; left: 12px; z-index: 1001;
-  background: #222; color: #fff; border: none; padding: 8px 12px; border-radius: 6px;
-  font-size: 18px; cursor: pointer;
+/* VIDEO PLACEHOLDER BASE */
+.video-placeholder {
+  position: relative; width: 100%; padding-top: 56.25%;
+  background: #111; border-radius: 0;
 }
-@media (max-width: 768px) {
-  .mobile-toggle { display: block; }
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
+.video-placeholder .play-btn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background 0.3s;
+}
+.video-placeholder .play-btn:hover { background: rgba(255,255,255,0.25); }
+.video-placeholder .play-btn::after {
+  content: ''; width: 0; height: 0;
+  border-top: 12px solid transparent; border-bottom: 12px solid transparent;
+  border-left: 20px solid #fff; margin-left: 4px;
 }
 
-/* ========== 1. BRUTALIST ========== */
-#hero-1 {
-  background: #fff; font-family: 'Space Mono', monospace; color: #000;
-  display: flex; align-items: center; justify-content: center;
-}
+/* ==================== 1. BRUTALIST ==================== */
+#hero-1 { background: #fff; font-family: 'JetBrains Mono', monospace; color: #000; }
 #hero-1 .inner {
-  border: 4px solid #000; padding: 60px 48px; max-width: 800px; position: relative;
+  padding: 40px; max-width: 1000px; margin: 0 auto;
+  display: flex; flex-direction: column; min-height: 100vh; justify-content: center;
 }
 #hero-1 h1 {
-  font-size: clamp(32px, 5vw, 64px); text-transform: uppercase; line-height: 1.05;
-  border-bottom: 4px solid #000; padding-bottom: 16px; margin-bottom: 16px;
+  font-size: clamp(22px, 3.5vw, 42px); font-weight: 800; text-transform: uppercase;
+  line-height: 1.15; border: 4px solid #000; padding: 24px; margin-bottom: 20px;
 }
-#hero-1 h1 span { background: #00ff41; padding: 0 6px; }
-#hero-1 p.sub {
-  font-size: clamp(14px, 1.8vw, 18px); line-height: 1.5; margin-bottom: 24px;
-  text-transform: uppercase; letter-spacing: 1px;
+#hero-1 h1 em { font-style: normal; color: #00ff41; }
+#hero-1 .subline {
+  font-size: 14px; border-left: 4px solid #00ff41; padding: 12px 16px;
+  margin-bottom: 20px; background: #f0f0f0;
+}
+#hero-1 .social-proof {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 24px; font-weight: 700;
 }
 #hero-1 .cta-btn {
-  display: inline-block; background: #000; color: #00ff41; padding: 16px 32px;
-  font-family: 'Space Mono', monospace; font-size: 16px; text-transform: uppercase;
-  border: 3px solid #000; cursor: pointer; text-decoration: none; font-weight: 700;
-  letter-spacing: 2px;
+  display: inline-block; background: #00ff41; color: #000; padding: 16px 32px;
+  font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px;
+  text-transform: uppercase; border: 3px solid #000; cursor: pointer;
+  text-decoration: none;
 }
-#hero-1 .cta-btn:hover { background: #00ff41; color: #000; }
-#hero-1 .proof {
-  margin-top: 24px; font-size: 13px; text-transform: uppercase;
-  border-top: 2px solid #000; padding-top: 12px; letter-spacing: 1px;
-}
-#hero-1 .corner {
-  position: absolute; top: -4px; right: -4px; background: #00ff41;
-  color: #000; padding: 6px 14px; font-size: 12px; font-weight: 700;
-  text-transform: uppercase;
+#hero-1 .cta-btn:hover { background: #000; color: #00ff41; }
+#hero-1 .under-cta { font-size: 11px; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+#hero-1 .video-placeholder {
+  margin-top: 30px; border: 4px solid #000; background: #000; border-radius: 0;
 }
 
-/* ========== 2. LUXURY EDITORIAL ========== */
-#hero-2 {
-  background: #faf6f0; font-family: 'Playfair Display', serif; color: #1a1a1a;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
+/* ==================== 2. LUXURY EDITORIAL ==================== */
+#hero-2 { background: #faf8f4; font-family: 'Playfair Display', serif; color: #1a1a1a; }
+#hero-2 .inner {
+  max-width: 800px; margin: 0 auto; padding: 60px 40px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; text-align: center;
 }
-#hero-2 .inner { max-width: 720px; padding: 40px; }
-#hero-2 .eyebrow {
-  font-size: 12px; text-transform: uppercase; letter-spacing: 6px;
-  color: #999; margin-bottom: 32px; font-family: 'Space Grotesk', sans-serif;
-}
-#hero-2 .line { width: 60px; height: 1px; background: #c9a96e; margin: 0 auto 32px; }
+#hero-2 .gold-line { width: 60px; height: 1px; background: #c5a47e; margin-bottom: 40px; }
 #hero-2 h1 {
-  font-size: clamp(36px, 5.5vw, 72px); font-weight: 400; line-height: 1.15;
-  margin-bottom: 24px; font-style: italic;
+  font-size: clamp(26px, 4vw, 52px); font-weight: 400; line-height: 1.3;
+  margin-bottom: 30px; letter-spacing: -0.5px;
 }
-#hero-2 h1 em { font-style: normal; font-weight: 900; }
-#hero-2 p.sub {
-  font-family: 'Space Grotesk', sans-serif; font-size: clamp(14px, 1.6vw, 17px);
-  color: #666; line-height: 1.7; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto;
+#hero-2 h1 em { font-style: italic; color: #c5a47e; }
+#hero-2 .subline {
+  font-family: -apple-system, sans-serif; font-size: 15px; color: #666;
+  max-width: 520px; line-height: 1.7; margin-bottom: 24px;
+}
+#hero-2 .social-proof {
+  font-family: -apple-system, sans-serif; font-size: 12px; letter-spacing: 3px;
+  text-transform: uppercase; color: #c5a47e; margin-bottom: 30px;
 }
 #hero-2 .cta-btn {
-  display: inline-block; background: transparent; color: #1a1a1a;
-  border: 1px solid #1a1a1a; padding: 14px 40px; font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px; text-transform: uppercase; letter-spacing: 3px; cursor: pointer;
-  text-decoration: none; transition: all 0.3s;
+  display: inline-block; background: #1a1a1a; color: #faf8f4; padding: 16px 48px;
+  font-family: 'Playfair Display', serif; font-size: 15px; letter-spacing: 2px;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: background 0.3s;
 }
-#hero-2 .cta-btn:hover { background: #1a1a1a; color: #faf6f0; }
-#hero-2 .proof {
-  margin-top: 48px; font-family: 'Space Grotesk', sans-serif;
-  font-size: 12px; color: #aaa; letter-spacing: 2px; text-transform: uppercase;
+#hero-2 .cta-btn:hover { background: #c5a47e; }
+#hero-2 .under-cta {
+  font-family: -apple-system, sans-serif; font-size: 11px; color: #999;
+  margin-top: 14px; letter-spacing: 1px;
 }
-#hero-2 .proof span { color: #c9a96e; font-weight: 600; }
+#hero-2 .gold-line-2 { width: 60px; height: 1px; background: #c5a47e; margin: 40px 0 30px; }
+#hero-2 .video-placeholder {
+  max-width: 640px; border: 1px solid #c5a47e; background: #1a1a1a; border-radius: 0;
+}
 
-/* ========== 3. NEON CYBERPUNK ========== */
+/* ==================== 3. NEON CYBERPUNK ==================== */
 #hero-3 {
-  background: #0a0a14; font-family: 'Share Tech Mono', monospace; color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
-#hero-3::before {
-  content: ''; position: absolute; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.03) 2px, rgba(0,255,255,0.03) 4px);
-  pointer-events: none;
-}
-#hero-3 .inner { max-width: 760px; padding: 40px; position: relative; z-index: 1; }
-#hero-3 h1 {
-  font-size: clamp(32px, 5vw, 60px); line-height: 1.15; margin-bottom: 20px;
-  color: #0ff; text-shadow: 0 0 20px rgba(0,255,255,0.5), 0 0 60px rgba(0,255,255,0.2);
-}
-#hero-3 h1 .magenta { color: #ff00ff; text-shadow: 0 0 20px rgba(255,0,255,0.5); }
-#hero-3 p.sub {
-  font-size: clamp(13px, 1.5vw, 16px); color: #8899aa; line-height: 1.7; margin-bottom: 32px;
-}
-#hero-3 .cta-btn {
-  display: inline-block; background: transparent; color: #0ff;
-  border: 1px solid #0ff; padding: 14px 36px; font-family: 'Share Tech Mono', monospace;
-  font-size: 14px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
-  text-decoration: none; box-shadow: 0 0 15px rgba(0,255,255,0.3), inset 0 0 15px rgba(0,255,255,0.1);
-  transition: all 0.3s;
-}
-#hero-3 .cta-btn:hover { background: #0ff; color: #0a0a14; box-shadow: 0 0 30px rgba(0,255,255,0.6); }
-#hero-3 .proof {
-  margin-top: 36px; font-size: 13px; color: #556; display: flex; gap: 24px; flex-wrap: wrap;
-}
-#hero-3 .proof div { border-left: 1px solid #333; padding-left: 12px; }
-#hero-3 .proof .val { color: #ff00ff; font-size: 20px; display: block; }
-#hero-3 .glow-orb {
-  position: absolute; width: 300px; height: 300px; border-radius: 50%;
-  filter: blur(100px); opacity: 0.15; pointer-events: none;
-}
-#hero-3 .glow-orb.cyan { background: #0ff; top: -100px; right: -50px; }
-#hero-3 .glow-orb.mag { background: #f0f; bottom: -100px; left: -50px; }
-
-/* ========== 4. SOFT PASTEL / PLAYFUL ========== */
-#hero-4 {
-  background: linear-gradient(135deg, #e8d5f5 0%, #d5eef5 50%, #f5e6d5 100%);
-  font-family: 'Quicksand', sans-serif; color: #4a3f6b;
-  display: flex; align-items: center; justify-content: center; text-align: center;
-}
-#hero-4 .inner { max-width: 640px; padding: 40px; }
-#hero-4 .emoji-row { font-size: 36px; margin-bottom: 20px; }
-#hero-4 h1 {
-  font-size: clamp(28px, 4.5vw, 52px); font-weight: 700; line-height: 1.25; margin-bottom: 16px;
-}
-#hero-4 h1 .highlight {
-  background: linear-gradient(120deg, #c4b5fd, #93c5fd); -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; background-clip: text;
-}
-#hero-4 p.sub {
-  font-size: clamp(14px, 1.6vw, 17px); color: #7b6f99; line-height: 1.7; margin-bottom: 28px;
-  font-weight: 500;
-}
-#hero-4 .cta-btn {
-  display: inline-block; background: #7c5cbf; color: #fff;
-  border: none; padding: 16px 40px; border-radius: 50px;
-  font-family: 'Quicksand', sans-serif; font-size: 16px; font-weight: 700;
-  cursor: pointer; text-decoration: none; box-shadow: 0 8px 24px rgba(124,92,191,0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-#hero-4 .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124,92,191,0.4); }
-#hero-4 .proof {
-  margin-top: 32px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
-}
-#hero-4 .proof-item {
-  background: rgba(255,255,255,0.6); border-radius: 16px; padding: 14px 20px;
-  font-size: 13px; font-weight: 600;
-}
-#hero-4 .proof-item .num { font-size: 22px; display: block; color: #7c5cbf; }
-
-/* ========== 5. BOLD GRADIENT ========== */
-#hero-5 {
-  background: linear-gradient(135deg, #ff6a00 0%, #ee0979 50%, #7b2ff7 100%);
-  font-family: 'Archivo Black', sans-serif; color: #fff;
-  display: flex; align-items: center; justify-content: center; text-align: center;
-}
-#hero-5 .inner { max-width: 800px; padding: 40px; }
-#hero-5 h1 {
-  font-size: clamp(36px, 6vw, 80px); line-height: 1.1; margin-bottom: 20px;
-  text-transform: uppercase;
-}
-#hero-5 p.sub {
-  font-family: 'Space Grotesk', sans-serif; font-size: clamp(15px, 1.8vw, 20px);
-  line-height: 1.6; margin-bottom: 36px; opacity: 0.9; font-weight: 300; max-width: 600px;
-  margin-left: auto; margin-right: auto;
-}
-#hero-5 .cta-btn {
-  display: inline-block; background: #fff; color: #ee0979;
-  border: none; padding: 20px 56px; border-radius: 8px;
-  font-family: 'Archivo Black', sans-serif; font-size: 18px; text-transform: uppercase;
-  cursor: pointer; text-decoration: none; letter-spacing: 1px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.2); transition: transform 0.2s;
-}
-#hero-5 .cta-btn:hover { transform: scale(1.05); }
-#hero-5 .proof {
-  margin-top: 40px; font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px; opacity: 0.8; display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
-}
-#hero-5 .proof div { font-size: 13px; }
-#hero-5 .proof .big { font-size: 28px; font-family: 'Archivo Black', sans-serif; display: block; }
-
-/* ========== 6. SWISS / INTERNATIONAL ========== */
-#hero-6 {
-  background: #fafafa; font-family: 'Space Grotesk', sans-serif; color: #111;
-  display: flex; align-items: stretch; height: 100vh;
-}
-#hero-6 .left-col {
-  flex: 1; display: flex; flex-direction: column; justify-content: center;
-  padding: 60px; padding-left: 80px;
-}
-#hero-6 .right-col {
-  width: 40%; background: #e31e26; display: flex; align-items: center;
-  justify-content: center; padding: 40px;
-}
-#hero-6 .right-col .big-num {
-  font-size: clamp(80px, 12vw, 180px); font-weight: 700; color: rgba(255,255,255,0.2);
-  line-height: 1;
-}
-#hero-6 .eyebrow {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 4px; color: #e31e26;
-  margin-bottom: 24px; font-weight: 600;
-}
-#hero-6 h1 {
-  font-size: clamp(28px, 4vw, 52px); font-weight: 700; line-height: 1.2; margin-bottom: 20px;
-}
-#hero-6 p.sub {
-  font-size: clamp(14px, 1.4vw, 16px); color: #555; line-height: 1.7; margin-bottom: 32px;
-  max-width: 420px;
-}
-#hero-6 .cta-btn {
-  display: inline-block; background: #e31e26; color: #fff;
-  border: none; padding: 14px 32px; font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
-  cursor: pointer; text-decoration: none; transition: background 0.2s;
-}
-#hero-6 .cta-btn:hover { background: #c4191f; }
-#hero-6 .proof {
-  margin-top: 40px; font-size: 12px; color: #999; text-transform: uppercase;
-  letter-spacing: 2px; display: flex; gap: 24px; flex-wrap: wrap;
-}
-#hero-6 .proof span { color: #111; font-weight: 700; }
-@media (max-width: 768px) {
-  #hero-6 { flex-direction: column; }
-  #hero-6 .left-col { padding: 40px 24px; }
-  #hero-6 .right-col { width: 100%; height: 200px; }
-}
-
-/* ========== 7. RETRO TERMINAL ========== */
-#hero-7 {
-  background: #0a0a0a; font-family: 'VT323', monospace; color: #33ff33;
-  display: flex; align-items: center; justify-content: center;
+  background: #0a0a0f; font-family: 'Share Tech Mono', monospace; color: #e0e0e0;
   position: relative;
 }
-#hero-7::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, rgba(51,255,51,0.05) 0%, transparent 70%);
-  pointer-events: none;
+#hero-3::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+  pointer-events: none; z-index: 1;
 }
-#hero-7 .inner { max-width: 700px; padding: 40px; position: relative; z-index: 1; }
-#hero-7 .prompt { font-size: 14px; color: #1a991a; margin-bottom: 8px; }
-#hero-7 h1 {
-  font-size: clamp(28px, 4.5vw, 52px); line-height: 1.3; margin-bottom: 20px;
-  text-shadow: 0 0 10px rgba(51,255,51,0.4);
+#hero-3 .inner {
+  position: relative; z-index: 2; max-width: 900px; margin: 0 auto;
+  padding: 60px 40px; display: flex; flex-direction: column;
+  justify-content: center; min-height: 100vh;
 }
-#hero-7 h1 .cursor {
-  display: inline-block; width: 12px; height: clamp(28px, 4.5vw, 52px);
-  background: #33ff33; margin-left: 4px; animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
+#hero-3 h1 {
+  font-size: clamp(22px, 3.5vw, 40px); font-weight: 400; line-height: 1.4;
+  text-shadow: 0 0 10px #00f0ff, 0 0 40px rgba(0,240,255,0.3);
+  color: #00f0ff; margin-bottom: 24px;
 }
-@keyframes blink { 50% { opacity: 0; } }
-#hero-7 p.sub {
-  font-size: clamp(16px, 2vw, 22px); color: #1a991a; line-height: 1.6; margin-bottom: 28px;
+#hero-3 h1 em {
+  font-style: normal; color: #ff00aa;
+  text-shadow: 0 0 10px #ff00aa, 0 0 40px rgba(255,0,170,0.3);
 }
-#hero-7 .cta-btn {
-  display: inline-block; background: transparent; color: #33ff33;
-  border: 2px solid #33ff33; padding: 12px 32px;
-  font-family: 'VT323', monospace; font-size: 20px;
-  cursor: pointer; text-decoration: none; text-shadow: 0 0 10px rgba(51,255,51,0.4);
-  transition: all 0.2s;
+#hero-3 .subline {
+  font-size: 14px; color: #888; margin-bottom: 20px;
+  border-left: 2px solid #ff00aa; padding-left: 16px;
 }
-#hero-7 .cta-btn:hover { background: #33ff33; color: #0a0a0a; text-shadow: none; }
-#hero-7 .proof {
-  margin-top: 32px; font-size: 18px; color: #1a771a;
-  border-top: 1px dashed #1a661a; padding-top: 16px;
+#hero-3 .social-proof {
+  font-size: 13px; color: #00f0ff; margin-bottom: 28px;
+  text-shadow: 0 0 8px rgba(0,240,255,0.4);
+}
+#hero-3 .cta-btn {
+  display: inline-block; padding: 14px 36px; font-family: 'Share Tech Mono', monospace;
+  font-size: 15px; background: transparent; color: #00f0ff;
+  border: 1px solid #00f0ff; cursor: pointer; text-decoration: none;
+  box-shadow: 0 0 15px rgba(0,240,255,0.2), inset 0 0 15px rgba(0,240,255,0.05);
+  transition: all 0.3s;
+}
+#hero-3 .cta-btn:hover {
+  background: #00f0ff; color: #0a0a0f;
+  box-shadow: 0 0 30px rgba(0,240,255,0.5);
+}
+#hero-3 .under-cta { font-size: 11px; color: #555; margin-top: 12px; }
+#hero-3 .video-placeholder {
+  margin-top: 30px; max-width: 700px; border: 1px solid #00f0ff;
+  background: #0a0a0f; box-shadow: 0 0 20px rgba(0,240,255,0.1);
+}
+#hero-3 .video-placeholder .play-btn { border: 1px solid #00f0ff; }
+
+/* ==================== 4. SOFT PASTEL ==================== */
+#hero-4 {
+  background: linear-gradient(135deg, #e8d5f5 0%, #d5f5e3 50%, #d5e8f5 100%);
+  font-family: 'Quicksand', sans-serif; color: #3d3d5c;
+}
+#hero-4 .inner {
+  max-width: 760px; margin: 0 auto; padding: 50px 30px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 100vh; text-align: center;
+}
+#hero-4 .emoji-scatter { font-size: 28px; margin-bottom: 16px; }
+#hero-4 h1 {
+  font-size: clamp(22px, 3.5vw, 38px); font-weight: 700; line-height: 1.45;
+  margin-bottom: 20px; color: #5b3a8c;
+}
+#hero-4 h1 em { font-style: normal; color: #e05eb3; }
+#hero-4 .subline {
+  font-size: 15px; color: #666; max-width: 520px; line-height: 1.7;
+  margin-bottom: 18px;
+}
+#hero-4 .social-proof {
+  font-size: 14px; color: #8b5ec0; font-weight: 600; margin-bottom: 28px;
+}
+#hero-4 .cta-btn {
+  display: inline-block; padding: 16px 44px; background: #8b5ec0; color: #fff;
+  font-family: 'Quicksand', sans-serif; font-size: 17px; font-weight: 700;
+  border: none; border-radius: 50px; cursor: pointer; text-decoration: none;
+  box-shadow: 0 8px 30px rgba(139,94,192,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#hero-4 .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(139,94,192,0.4); }
+#hero-4 .under-cta { font-size: 12px; color: #888; margin-top: 12px; }
+#hero-4 .video-placeholder {
+  margin-top: 30px; max-width: 580px; border-radius: 20px; overflow: hidden;
+  background: rgba(91,58,140,0.15); border: 2px solid rgba(255,255,255,0.5);
+}
+#hero-4 .video-placeholder .play-btn {
+  background: rgba(139,94,192,0.3); border-radius: 50%;
 }
 
-/* ========== 8. GLASSMORPHISM ========== */
-#hero-8 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #43e97b 100%);
-  background-size: 300% 300%; animation: gradShift 8s ease infinite;
-  font-family: 'Outfit', sans-serif; color: #fff;
-  display: flex; align-items: center; justify-content: center;
+/* ==================== 5. BOLD GRADIENT ==================== */
+#hero-5 {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff1493 50%, #7b2ff7 100%);
+  font-family: 'Archivo Black', sans-serif; color: #fff;
 }
-@keyframes gradShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+#hero-5 .inner {
+  max-width: 900px; margin: 0 auto; padding: 60px 40px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 100vh; text-align: center;
+}
+#hero-5 h1 {
+  font-size: clamp(26px, 4.5vw, 56px); line-height: 1.15;
+  margin-bottom: 24px; text-transform: uppercase;
+}
+#hero-5 h1 em { font-style: normal; text-decoration: underline; text-decoration-thickness: 4px; }
+#hero-5 .subline {
+  font-family: -apple-system, sans-serif; font-size: 16px; font-weight: 400;
+  max-width: 560px; line-height: 1.7; margin-bottom: 20px; opacity: 0.9;
+}
+#hero-5 .social-proof {
+  font-family: -apple-system, sans-serif; font-size: 14px; opacity: 0.85;
+  margin-bottom: 32px;
+}
+#hero-5 .cta-btn {
+  display: inline-block; padding: 20px 56px; background: #fff;
+  color: #7b2ff7; font-family: 'Archivo Black', sans-serif; font-size: 20px;
+  border: none; border-radius: 8px; cursor: pointer; text-decoration: none;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+#hero-5 .cta-btn:hover { transform: scale(1.05); }
+#hero-5 .under-cta { font-family: -apple-system, sans-serif; font-size: 13px; opacity: 0.75; margin-top: 14px; }
+#hero-5 .video-placeholder {
+  margin-top: 40px; max-width: 700px; border-radius: 12px; overflow: hidden;
+  background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2);
+}
+
+/* ==================== 6. SWISS / INTERNATIONAL ==================== */
+#hero-6 { background: #fff; font-family: 'Barlow', sans-serif; color: #111; }
+#hero-6 .inner {
+  max-width: 1100px; margin: 0 auto; padding: 80px 40px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: center; min-height: 100vh;
+}
+#hero-6 .left { position: relative; }
+#hero-6 .red-bar {
+  width: 60px; height: 8px; background: #ff0000; margin-bottom: 32px;
+}
+#hero-6 h1 {
+  font-size: clamp(24px, 3.5vw, 44px); font-weight: 900; line-height: 1.2;
+  margin-bottom: 24px;
+}
+#hero-6 h1 em { font-style: normal; color: #ff0000; }
+#hero-6 .subline {
+  font-size: 15px; font-weight: 300; color: #555; line-height: 1.7;
+  margin-bottom: 20px;
+}
+#hero-6 .social-proof {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  font-weight: 500; color: #999; margin-bottom: 28px;
+}
+#hero-6 .cta-btn {
+  display: inline-block; padding: 14px 36px; background: #ff0000; color: #fff;
+  font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer;
+  text-decoration: none; transition: background 0.3s;
+}
+#hero-6 .cta-btn:hover { background: #cc0000; }
+#hero-6 .under-cta { font-size: 11px; color: #aaa; margin-top: 10px; font-weight: 300; }
+#hero-6 .right {}
+#hero-6 .video-placeholder { background: #111; border: none; }
+
+/* ==================== 7. RETRO TERMINAL ==================== */
+#hero-7 {
+  background: #000; font-family: 'VT323', monospace; color: #00ff41;
+}
+#hero-7 .inner {
+  max-width: 800px; margin: 0 auto; padding: 40px 30px;
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100vh;
+}
+#hero-7 .prompt { font-size: 14px; margin-bottom: 12px; opacity: 0.5; }
+#hero-7 h1 {
+  font-size: clamp(20px, 3vw, 34px); font-weight: 400; line-height: 1.5;
+  margin-bottom: 20px; text-shadow: 0 0 10px rgba(0,255,65,0.4);
+}
+#hero-7 h1 em { font-style: normal; color: #fff; }
+@keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+#hero-7 .cursor {
+  display: inline-block; width: 10px; height: 20px;
+  background: #00ff41; animation: blink 1s infinite; vertical-align: middle;
+  margin-left: 4px;
+}
+#hero-7 .subline {
+  font-size: 18px; color: #009926; margin-bottom: 16px;
+  padding-left: 20px; border-left: 2px solid #00ff41;
+}
+#hero-7 .social-proof { font-size: 18px; margin-bottom: 24px; opacity: 0.7; }
+#hero-7 .cta-btn {
+  display: inline-block; padding: 12px 28px; background: #00ff41; color: #000;
+  font-family: 'VT323', monospace; font-size: 22px; border: none; cursor: pointer;
+  text-decoration: none; transition: all 0.2s;
+}
+#hero-7 .cta-btn:hover { background: #fff; color: #000; }
+#hero-7 .under-cta { font-size: 16px; color: #006b1f; margin-top: 12px; }
+#hero-7 .video-placeholder {
+  margin-top: 30px; max-width: 640px; border: 1px solid #00ff41;
+  background: #000; box-shadow: 0 0 15px rgba(0,255,65,0.1);
+}
+#hero-7 .video-placeholder .play-btn {
+  border: 1px solid #00ff41;
+}
+#hero-7 .video-placeholder .play-btn::after { border-left-color: #00ff41; }
+
+/* ==================== 8. GLASSMORPHISM ==================== */
+#hero-8 {
+  font-family: 'Outfit', sans-serif; color: #1a1a2e;
+  position: relative; overflow: hidden;
+}
+@keyframes gradMove {
+  0% { transform: translate(-20%,-20%) rotate(0deg); }
+  50% { transform: translate(10%,10%) rotate(180deg); }
+  100% { transform: translate(-20%,-20%) rotate(360deg); }
+}
+#hero-8 .bg {
+  position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b9d, #c084fc);
+  background-size: 400% 400%;
+  animation: gradMove 20s ease infinite;
+  z-index: 0;
+}
+#hero-8 .inner {
+  position: relative; z-index: 1; max-width: 700px; margin: 0 auto;
+  padding: 60px 30px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; min-height: 100vh; text-align: center;
+}
 #hero-8 .glass-card {
-  background: rgba(255,255,255,0.15); backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 24px; padding: 56px 48px; max-width: 620px; text-align: center;
+  background: rgba(255,255,255,0.2); backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 24px; padding: 48px 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
 }
 #hero-8 h1 {
-  font-size: clamp(28px, 4vw, 48px); font-weight: 700; line-height: 1.2; margin-bottom: 16px;
+  font-size: clamp(22px, 3.2vw, 38px); font-weight: 700; line-height: 1.4;
+  margin-bottom: 20px; color: #1a1a2e;
 }
-#hero-8 p.sub {
-  font-size: clamp(14px, 1.5vw, 17px); line-height: 1.7; margin-bottom: 32px;
-  opacity: 0.9; font-weight: 300;
-}
+#hero-8 h1 em { font-style: normal; color: #6c3aed; }
+#hero-8 .subline { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 18px; }
+#hero-8 .social-proof { font-size: 13px; color: #6c3aed; font-weight: 600; margin-bottom: 28px; }
 #hero-8 .cta-btn {
-  display: inline-block; background: #fff; color: #764ba2;
-  border: none; padding: 16px 40px; border-radius: 14px;
+  display: inline-block; padding: 16px 44px; background: #6c3aed; color: #fff;
   font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600;
-  cursor: pointer; text-decoration: none; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  border: none; border-radius: 14px; cursor: pointer; text-decoration: none;
+  box-shadow: 0 8px 30px rgba(108,58,237,0.3);
   transition: transform 0.2s;
 }
 #hero-8 .cta-btn:hover { transform: translateY(-2px); }
-#hero-8 .proof {
-  margin-top: 32px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
-}
-#hero-8 .proof-pill {
-  background: rgba(255,255,255,0.2); border-radius: 50px;
-  padding: 8px 18px; font-size: 13px; font-weight: 500;
-  border: 1px solid rgba(255,255,255,0.2);
+#hero-8 .under-cta { font-size: 12px; color: #555; margin-top: 12px; }
+#hero-8 .video-placeholder {
+  margin-top: 28px; border-radius: 16px; overflow: hidden;
+  background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
 }
 
-/* ========== 9. NEWSPAPER / BROADSHEET ========== */
+/* ==================== 9. NEWSPAPER ==================== */
 #hero-9 {
   background: #f5f0e8; font-family: 'Lora', serif; color: #1a1a1a;
-  display: flex; align-items: flex-start; justify-content: center;
-  padding-top: 40px; overflow-y: auto;
 }
 #hero-9 .inner {
-  max-width: 800px; width: 100%; padding: 32px;
-  border: 2px solid #1a1a1a;
+  max-width: 900px; margin: 0 auto; padding: 40px 30px;
+  display: flex; flex-direction: column; min-height: 100vh; justify-content: center;
 }
 #hero-9 .masthead {
-  text-align: center; border-bottom: 3px double #1a1a1a; padding-bottom: 12px; margin-bottom: 12px;
+  text-align: center; border-bottom: 3px double #1a1a1a; padding-bottom: 12px;
+  margin-bottom: 8px;
 }
 #hero-9 .masthead h2 {
-  font-size: clamp(28px, 5vw, 56px); font-weight: 700;
-  letter-spacing: 4px; text-transform: uppercase; font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 52px); font-weight: 700;
+  letter-spacing: 6px; text-transform: uppercase;
 }
 #hero-9 .dateline {
-  font-size: 11px; text-align: center; color: #666;
-  border-bottom: 1px solid #1a1a1a; padding-bottom: 8px; margin-bottom: 16px;
-  font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 2px;
+  text-align: center; font-size: 12px; color: #888; border-bottom: 1px solid #ccc;
+  padding: 6px 0; margin-bottom: 24px; font-family: -apple-system, sans-serif;
 }
 #hero-9 .breaking {
-  font-size: 13px; text-transform: uppercase; letter-spacing: 3px;
-  color: #c00; font-weight: 700; margin-bottom: 8px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; font-weight: 700; color: #cc0000;
+  text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px;
 }
 #hero-9 h1 {
-  font-size: clamp(24px, 3.5vw, 42px); line-height: 1.2; margin-bottom: 16px;
-  font-weight: 700;
+  font-size: clamp(22px, 3.5vw, 40px); font-weight: 700; line-height: 1.3;
+  margin-bottom: 20px;
 }
-#hero-9 .columns {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-  border-top: 1px solid #ccc; padding-top: 16px; margin-bottom: 24px;
+#hero-9 h1 em { font-style: italic; }
+#hero-9 .article-body {
+  column-count: 2; column-gap: 30px; column-rule: 1px solid #ddd;
+  font-size: 15px; line-height: 1.7; margin-bottom: 24px;
 }
-@media (max-width: 600px) { #hero-9 .columns { grid-template-columns: 1fr; } }
-#hero-9 .columns p {
-  font-size: clamp(13px, 1.3vw, 15px); line-height: 1.7; text-align: justify;
+#hero-9 .social-proof {
+  font-size: 13px; font-weight: 700; text-align: center;
+  margin-bottom: 20px; font-style: italic;
 }
-#hero-9 .columns p::first-letter { font-size: 1.8em; font-weight: 700; float: left; margin-right: 4px; }
+#hero-9 .cta-section { text-align: center; }
 #hero-9 .cta-btn {
-  display: inline-block; background: #1a1a1a; color: #f5f0e8;
-  border: none; padding: 12px 28px; font-family: 'Lora', serif;
-  font-size: 14px; cursor: pointer; text-decoration: none; transition: background 0.2s;
+  display: inline-block; padding: 14px 36px; background: #1a1a1a; color: #f5f0e8;
+  font-family: 'Lora', serif; font-size: 15px; border: none; cursor: pointer;
+  text-decoration: none; transition: background 0.3s;
 }
-#hero-9 .cta-btn:hover { background: #c00; }
-#hero-9 .proof {
-  margin-top: 16px; font-size: 12px; color: #888; font-style: italic;
-  border-top: 1px solid #ccc; padding-top: 12px;
+#hero-9 .cta-btn:hover { background: #cc0000; }
+#hero-9 .under-cta { font-size: 11px; color: #999; margin-top: 10px; text-align: center; font-family: -apple-system, sans-serif; }
+#hero-9 .video-placeholder {
+  margin-top: 24px; max-width: 600px; margin-left: auto; margin-right: auto;
+  border: 1px solid #ccc; background: #1a1a1a;
 }
 
-/* ========== 10. DARK MINIMAL LUXURY ========== */
-#hero-10 {
-  background: #000; font-family: 'Syne', sans-serif; color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center; position: relative;
+/* ==================== 10. DARK MINIMAL LUXURY ==================== */
+#hero-10 { background: #000; font-family: 'Syne', sans-serif; color: #fff; }
+#hero-10 .inner {
+  max-width: 800px; margin: 0 auto; padding: 80px 40px;
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100vh;
 }
-#hero-10 .accent-line {
-  position: absolute; top: 50%; left: 0; width: 100%; height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
-}
-#hero-10 .inner { max-width: 700px; padding: 40px; position: relative; z-index: 1; }
-#hero-10 .eyebrow {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 6px;
-  color: #444; margin-bottom: 48px; font-weight: 400;
-}
+#hero-10 .thin-line { width: 40px; height: 1px; background: #444; margin-bottom: 60px; }
 #hero-10 h1 {
-  font-size: clamp(32px, 5vw, 64px); font-weight: 400; line-height: 1.2;
-  margin-bottom: 24px; letter-spacing: -1px;
+  font-size: clamp(24px, 3.5vw, 44px); font-weight: 300; line-height: 1.5;
+  margin-bottom: 40px; letter-spacing: -0.5px; color: #e0e0e0;
 }
-#hero-10 h1 .thin { font-weight: 400; color: #555; }
-#hero-10 p.sub {
-  font-size: clamp(14px, 1.4vw, 16px); color: #555; line-height: 1.8;
-  margin-bottom: 48px; font-weight: 400; max-width: 480px;
-  margin-left: auto; margin-right: auto;
+#hero-10 h1 em { font-style: normal; color: #fff; font-weight: 400; }
+#hero-10 .subline {
+  font-size: 14px; color: #555; font-weight: 300; line-height: 1.8;
+  margin-bottom: 30px; max-width: 500px;
+}
+#hero-10 .social-proof {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: #444; margin-bottom: 50px; font-weight: 300;
 }
 #hero-10 .cta-btn {
-  display: inline-block; background: transparent; color: #fff;
-  border: 1px solid #333; padding: 14px 40px;
-  font-family: 'Syne', sans-serif; font-size: 13px; letter-spacing: 3px;
-  text-transform: uppercase; cursor: pointer; text-decoration: none;
-  transition: all 0.3s;
+  display: inline-block; padding: 16px 48px; background: transparent; color: #fff;
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 300;
+  letter-spacing: 3px; text-transform: uppercase; border: 1px solid #333;
+  cursor: pointer; text-decoration: none; transition: all 0.4s;
 }
 #hero-10 .cta-btn:hover { border-color: #fff; }
-#hero-10 .proof {
-  margin-top: 64px; font-size: 12px; color: #333; letter-spacing: 2px;
-  text-transform: uppercase;
+#hero-10 .under-cta { font-size: 11px; color: #333; margin-top: 16px; font-weight: 300; }
+#hero-10 .thin-line-2 { width: 40px; height: 1px; background: #333; margin: 50px 0 30px; }
+#hero-10 .video-placeholder {
+  max-width: 600px; background: #0a0a0a; border: 1px solid #1a1a1a;
 }
-#hero-10 .proof span { color: #666; }
+#hero-10 .video-placeholder .play-btn { background: rgba(255,255,255,0.05); border: 1px solid #333; }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: 100%; height: 52px;
+    flex-direction: row; border-right: none; border-bottom: 1px solid #2a2a30;
+  }
+  .sidebar-header { display: none; }
+  .sidebar-list {
+    display: flex; flex-direction: row; overflow-x: auto; padding: 0;
+    align-items: stretch; -webkit-overflow-scrolling: touch;
+  }
+  .sidebar-item {
+    white-space: nowrap; padding: 14px 14px; border-left: none;
+    border-bottom: 3px solid transparent; font-size: 12px;
+  }
+  .sidebar-item.active { border-bottom-color: #7c5cfc; border-left-color: transparent; }
+  .main { margin-left: 0; margin-top: 52px; height: calc(100vh - 52px); }
+  .hero-section { height: calc(100vh - 52px); }
+  #hero-6 .inner { grid-template-columns: 1fr; gap: 30px; padding: 40px 24px; }
+  #hero-9 .article-body { column-count: 1; }
+}
+@media (max-width: 480px) {
+  #hero-1 h1, #hero-2 h1, #hero-3 h1, #hero-5 h1, #hero-7 h1 { font-size: 20px; }
+}
 </style>
 </head>
 <body>
 
-<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
-
 <nav class="sidebar">
-  <div class="sidebar-title">Hero Designs</div>
-  <a onclick="show(1)" class="active" data-i="1">1. Brutalist</a>
-  <a onclick="show(2)" data-i="2">2. Luxury Editorial</a>
-  <a onclick="show(3)" data-i="3">3. Neon Cyberpunk</a>
-  <a onclick="show(4)" data-i="4">4. Soft Pastel</a>
-  <a onclick="show(5)" data-i="5">5. Bold Gradient</a>
-  <a onclick="show(6)" data-i="6">6. Swiss/Intl</a>
-  <a onclick="show(7)" data-i="7">7. Retro Terminal</a>
-  <a onclick="show(8)" data-i="8">8. Glassmorphism</a>
-  <a onclick="show(9)" data-i="9">9. Newspaper</a>
-  <a onclick="show(10)" data-i="10">10. Dark Minimal</a>
+  <div class="sidebar-header">Hero Designs</div>
+  <div class="sidebar-list">
+    <div class="sidebar-item active" data-target="1"><span class="num">1</span>Brutalist</div>
+    <div class="sidebar-item" data-target="2"><span class="num">2</span>Luxury Editorial</div>
+    <div class="sidebar-item" data-target="3"><span class="num">3</span>Neon Cyberpunk</div>
+    <div class="sidebar-item" data-target="4"><span class="num">4</span>Soft Pastel</div>
+    <div class="sidebar-item" data-target="5"><span class="num">5</span>Bold Gradient</div>
+    <div class="sidebar-item" data-target="6"><span class="num">6</span>Swiss / Intl</div>
+    <div class="sidebar-item" data-target="7"><span class="num">7</span>Retro Terminal</div>
+    <div class="sidebar-item" data-target="8"><span class="num">8</span>Glassmorphism</div>
+    <div class="sidebar-item" data-target="9"><span class="num">9</span>Newspaper</div>
+    <div class="sidebar-item" data-target="10"><span class="num">10</span>Dark Minimal</div>
+  </div>
 </nav>
 
-<div class="main">
+<main class="main">
 
   <!-- 1. BRUTALIST -->
-  <div id="hero-1" class="hero-section active">
+  <section id="hero-1" class="hero-section active">
     <div class="inner">
-      <div class="corner">NEW</div>
-      <h1>STOP THINKING IN <span>STRAIGHT LINES.</span></h1>
-      <p class="sub">Poppy is the AI whiteboard that lets you drag in videos, PDFs, voice notes — and think visually. Not another boring chat window. This is how your brain actually works.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">→ TRY POPPY FREE</a>
-      <div class="proof">8,000+ USERS / $400K/MO BOOTSTRAPPED / 7-DAY MONEY-BACK GUARANTEE</div>
+      <h1>WATCH HOW THIS AI TOOL HELPS <em>CONTENT CREATORS</em>, <em>FOUNDERS</em>, AND <em>MARKETERS</em> MAKE VIRAL CONTENT & ADS WITH AI WHILE SAVING 100'S OF HOURS PER MONTH</h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">GET POPPY AI 🚀</a>
+      <div class="under-cta">RISK-FREE FOR 7-DAYS. 100% MONEY-BACK GUARANTEE.</div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
     </div>
-  </div>
+  </section>
 
   <!-- 2. LUXURY EDITORIAL -->
-  <div id="hero-2" class="hero-section">
+  <section id="hero-2" class="hero-section">
     <div class="inner">
-      <div class="eyebrow">Introducing Poppy AI</div>
-      <div class="line"></div>
-      <h1>The Art of <em>Thinking</em> Together</h1>
-      <p class="sub">A visual, multiplayer AI canvas where ideas flow freely. Import anything — videos, documents, images — and let AI illuminate connections your linear tools never could.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">Begin Your Free Trial</a>
-      <div class="proof">Trusted by <span>8,000+</span> creators, founders &amp; visionaries</div>
+      <div class="gold-line"></div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make viral content & ads with AI while saving 100's of hours per month</h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">Get Poppy AI 🚀</a>
+      <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+      <div class="gold-line-2"></div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
     </div>
-  </div>
+  </section>
 
   <!-- 3. NEON CYBERPUNK -->
-  <div id="hero-3" class="hero-section">
-    <div class="glow-orb cyan"></div>
-    <div class="glow-orb mag"></div>
+  <section id="hero-3" class="hero-section">
     <div class="inner">
-      <h1>YOUR AI. <span class="magenta">YOUR CANVAS.</span><br>NO LIMITS.</h1>
-      <p class="sub">Poppy is the multiplayer AI whiteboard for non-linear thinkers. Drag in YouTube, TikTok, PDFs, voice notes — remix everything with AI. Think in every direction at once.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">[ INITIALIZE POPPY ]</a>
-      <div class="proof">
-        <div><span class="val">8,000+</span>Active Users</div>
-        <div><span class="val">$400K</span>Monthly Rev</div>
-        <div><span class="val">7 Day</span>Money Back</div>
-      </div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month</h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">// Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">Get Poppy AI 🚀</a>
+      <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
     </div>
-  </div>
+  </section>
 
-  <!-- 4. SOFT PASTEL / PLAYFUL -->
-  <div id="hero-4" class="hero-section">
+  <!-- 4. SOFT PASTEL -->
+  <section id="hero-4" class="hero-section">
     <div class="inner">
-      <div class="emoji-row">🎨 🧠 ✨</div>
-      <h1>Think visually.<br><span class="highlight">Create magically.</span></h1>
-      <p class="sub">Poppy is the friendly AI whiteboard where you drag in anything — videos, images, voice notes — and collaborate with AI like it's your creative bestie. Built for brains that don't think in straight lines!</p>
-      <a href="https://getpoppy.ai" class="cta-btn">✨ Try Poppy Free</a>
-      <div class="proof">
-        <div class="proof-item"><span class="num">8K+</span>Happy thinkers</div>
-        <div class="proof-item"><span class="num">4.9★</span>User love</div>
-        <div class="proof-item"><span class="num">7 days</span>Free to try</div>
-      </div>
+      <div class="emoji-scatter">✨ 🎨 🚀 💜</div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month</h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">Get Poppy AI 🚀</a>
+      <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee. ✌️</div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
     </div>
-  </div>
+  </section>
 
   <!-- 5. BOLD GRADIENT -->
-  <div id="hero-5" class="hero-section">
+  <section id="hero-5" class="hero-section">
     <div class="inner">
-      <h1>IF CHATGPT AND A WHITEBOARD HAD A BABY</h1>
-      <p class="sub">Drag in videos, PDFs, TikToks, images — and work with AI visually. Multiplayer. Non-linear. Built for creators, founders, and the beautifully chaotic.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">TRY POPPY FREE →</a>
-      <div class="proof">
-        <div><span class="big">8K+</span>Customers</div>
-        <div><span class="big">$0</span>VC Raised</div>
-        <div><span class="big">7d</span>Money Back</div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month</h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">Get Poppy AI 🚀</a>
+      <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
+    </div>
+  </section>
+
+  <!-- 6. SWISS -->
+  <section id="hero-6" class="hero-section">
+    <div class="inner">
+      <div class="left">
+        <div class="red-bar"></div>
+        <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month</h1>
+        <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+        <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+        <a class="cta-btn">Get Poppy AI 🚀</a>
+        <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+      </div>
+      <div class="right">
+        <div class="video-placeholder"><div class="play-btn"></div></div>
       </div>
     </div>
-  </div>
-
-  <!-- 6. SWISS / INTERNATIONAL -->
-  <div id="hero-6" class="hero-section">
-    <div class="left-col">
-      <div class="eyebrow">Poppy AI — Visual Thinking</div>
-      <h1>The multiplayer AI whiteboard for non-linear minds.</h1>
-      <p class="sub">Import YouTube videos, TikToks, PDFs, voice notes, and images into an infinite canvas. Collaborate in real-time. Let AI connect the dots.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">Try Poppy Free →</a>
-      <div class="proof"><span>8,000+</span> customers · <span>Bootstrapped</span> · <span>7-day</span> guarantee</div>
-    </div>
-    <div class="right-col">
-      <div class="big-num">P.</div>
-    </div>
-  </div>
+  </section>
 
   <!-- 7. RETRO TERMINAL -->
-  <div id="hero-7" class="hero-section">
+  <section id="hero-7" class="hero-section">
     <div class="inner">
-      <div class="prompt">user@poppy:~$ ./think --visual --multiplayer</div>
-      <h1>Your brain doesn't think in chat logs. Why should your AI?<span class="cursor"></span></h1>
-      <p class="sub">> Poppy is a visual AI whiteboard. Drag in videos, PDFs, voice notes. Collaborate multiplayer. Think non-linearly. 8,000+ users can't be wrong.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">$ sudo try-poppy --free</a>
-      <div class="proof">[STATUS] 8,000+ active users | bootstrapped to $400K/mo | 7-day money-back guarantee</div>
+      <div class="prompt">user@poppy:~$ cat hero.txt</div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month<span class="cursor"></span></h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">[STATUS] Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">&gt; GET_POPPY --now 🚀</a>
+      <div class="under-cta">// Risk-free for 7-days. 100% money-back guarantee.</div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
     </div>
-  </div>
+  </section>
 
   <!-- 8. GLASSMORPHISM -->
-  <div id="hero-8" class="hero-section">
-    <div class="glass-card">
-      <h1>Think bigger. Think visual. Think together.</h1>
-      <p class="sub">Poppy is the AI whiteboard where you drop in videos, PDFs, images, and voice notes — then remix everything with AI. Real-time multiplayer, infinite canvas, zero limits.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">Try Poppy Free →</a>
-      <div class="proof">
-        <span class="proof-pill">🚀 8,000+ users</span>
-        <span class="proof-pill">💰 Bootstrapped</span>
-        <span class="proof-pill">✅ 7-day guarantee</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 9. NEWSPAPER / BROADSHEET -->
-  <div id="hero-9" class="hero-section">
+  <section id="hero-8" class="hero-section">
+    <div class="bg"></div>
     <div class="inner">
-      <div class="masthead"><h2>The Poppy Times</h2></div>
-      <div class="dateline">April 1, 2026 · San Francisco · Vol. I, No. 1 · getpoppy.ai</div>
-      <div class="breaking">BREAKING:</div>
-      <h1>Visual AI Whiteboard Reaches 8,000 Customers; Bootstrapped Startup Reports $400K Monthly Revenue</h1>
-      <div class="columns">
-        <p>In a striking departure from the linear chatbot paradigm that has dominated artificial intelligence interfaces, Poppy AI has introduced a multiplayer visual whiteboard that allows users to drag in YouTube videos, TikToks, Instagram Reels, PDFs, voice notes, and images — working with AI in a spatial, non-linear format.</p>
-        <p>The platform, described by its founders as "what happens if ChatGPT and a whiteboard had a baby," has attracted content creators, marketers, founders, and neurodivergent thinkers who find traditional chat interfaces constraining. Collaboration happens in real-time, Figma-style, on an infinite canvas.</p>
+      <div class="glass-card">
+        <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month</h1>
+        <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+        <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+        <a class="cta-btn">Get Poppy AI 🚀</a>
+        <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+        <div class="video-placeholder"><div class="play-btn"></div></div>
       </div>
-      <a href="https://getpoppy.ai" class="cta-btn">Read More — Try Poppy Free →</a>
-      <div class="proof">"The most exciting AI tool I've used this year." — Early adopter testimonial · 7-day money-back guarantee</div>
     </div>
-  </div>
+  </section>
+
+  <!-- 9. NEWSPAPER -->
+  <section id="hero-9" class="hero-section">
+    <div class="inner">
+      <div class="masthead"><h2>The Daily Creator</h2></div>
+      <div class="dateline">Tuesday, April 1, 2026 &nbsp;|&nbsp; Vol. CXII, No. 4,021 &nbsp;|&nbsp; Technology Section</div>
+      <div class="breaking">BREAKING:</div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make VIRAL content & ads with AI while saving 100's of hours per month</h1>
+      <div class="article-body">
+        <p>We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</p>
+      </div>
+      <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+      <div class="cta-section">
+        <a class="cta-btn">Get Poppy AI 🚀</a>
+        <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+      </div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
+    </div>
+  </section>
 
   <!-- 10. DARK MINIMAL LUXURY -->
-  <div id="hero-10" class="hero-section">
-    <div class="accent-line"></div>
+  <section id="hero-10" class="hero-section">
     <div class="inner">
-      <div class="eyebrow">Poppy AI</div>
-      <h1>Think visually.<br><span class="thin">Collaborate endlessly.</span></h1>
-      <p class="sub">The multiplayer AI canvas for ideas that don't fit in a chat window. Videos, documents, voice, images — all on one infinite board, powered by AI.</p>
-      <a href="https://getpoppy.ai" class="cta-btn">Start Free</a>
-      <div class="proof">8,000+ customers &nbsp;·&nbsp; <span>Bootstrapped</span> &nbsp;·&nbsp; 7-day guarantee</div>
+      <div class="thin-line"></div>
+      <h1>Watch how this AI tool helps <em>content creators</em>, <em>founders</em>, and <em>marketers</em> make viral content & ads with AI while saving 100's of hours per month</h1>
+      <div class="subline">We're the First and ONLY MULTIPLAYER AI in the world! (yes haha you can use AI with friends collaboratively 🤯)</div>
+      <div class="social-proof">Over 8,000+ customers ❤️ Poppy AI</div>
+      <a class="cta-btn">Get Poppy AI 🚀</a>
+      <div class="under-cta">Risk-free for 7-days. 100% money-back guarantee.</div>
+      <div class="thin-line-2"></div>
+      <div class="video-placeholder"><div class="play-btn"></div></div>
     </div>
-  </div>
+  </section>
 
-</div>
+</main>
 
 <script>
-function show(n) {
-  document.querySelectorAll('.hero-section').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.sidebar a').forEach(el => el.classList.remove('active'));
-  document.getElementById('hero-' + n).classList.add('active');
-  document.querySelector('.sidebar a[data-i="' + n + '"]').classList.add('active');
-  // Close mobile sidebar
-  document.querySelector('.sidebar').classList.remove('open');
-}
+document.querySelectorAll('.sidebar-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    const target = item.getAttribute('data-target');
+    document.querySelectorAll('.hero-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('hero-' + target).classList.add('active');
+  });
+});
 </script>
 </body>
 </html>
