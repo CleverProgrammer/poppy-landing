@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poppy AI — The Visual AI Whiteboard for Creators</title>
+<meta name="description" content="Create 10x faster content with Poppy AI. The visual, multiplayer AI whiteboard that thinks the way you do. Drag in anything. Create everything.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Satoshi:wght@400;500;700;900&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #1a1a25;
+  --text: #f0eef6;
+  --text-muted: #8a87a0;
+  --accent: #ff6b35;
+  --accent2: #ff3e8e;
+  --accent3: #7c5cff;
+  --accent4: #00d4aa;
+  --gradient1: linear-gradient(135deg, #ff6b35, #ff3e8e);
+  --gradient2: linear-gradient(135deg, #7c5cff, #00d4aa);
+  --gradient3: linear-gradient(135deg, #ff3e8e, #7c5cff);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Satoshi', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--font-body); cursor: pointer; border: none; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ========== NAV ========== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 20px 0;
+  transition: all 0.4s;
+  backdrop-filter: blur(20px);
+  background: rgba(10,10,15,0.7);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-dot {
+  width: 12px; height: 12px;
+  background: var(--gradient1);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: var(--gradient1);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 60px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(255,107,53,0.4); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 60px;
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+/* ========== HERO ========== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 100px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: float 8s ease-in-out infinite;
+}
+
+.hero-orb-1 {
+  width: 600px; height: 600px;
+  background: rgba(255,107,53,0.12);
+  top: -10%; right: -10%;
+  animation-delay: 0s;
+}
+
+.hero-orb-2 {
+  width: 500px; height: 500px;
+  background: rgba(124,92,255,0.1);
+  bottom: -20%; left: -10%;
+  animation-delay: -3s;
+}
+
+.hero-orb-3 {
+  width: 300px; height: 300px;
+  background: rgba(255,62,142,0.08);
+  top: 40%; left: 50%;
+  animation-delay: -5s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 60px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.hero-badge span {
+  background: var(--gradient1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.8s ease 0.1s forwards;
+  opacity: 0;
+}
+
+.hero h1 .gradient-text {
+  background: var(--gradient1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero h1 .gradient-text-2 {
+  background: var(--gradient2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+  animation: fadeInUp 0.8s ease 0.2s forwards;
+  opacity: 0;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+  animation: fadeInUp 0.8s ease 0.3s forwards;
+  opacity: 0;
+}
+
+.hero-guarantee {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  animation: fadeInUp 0.8s ease 0.4s forwards;
+  opacity: 0;
+}
+
+.hero-guarantee span { color: var(--accent4); font-weight: 600; }
+
+/* Hero visual — Abstract whiteboard mockup */
+.hero-visual {
+  margin-top: 64px;
+  position: relative;
+  animation: fadeInUp 1s ease 0.5s forwards;
+  opacity: 0;
+}
+
+.hero-mockup {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 16/10;
+  background: var(--bg2);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.mockup-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.mockup-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.mockup-dot:nth-child(1) { background: #ff5f56; }
+.mockup-dot:nth-child(2) { background: #ffbd2e; }
+.mockup-dot:nth-child(3) { background: #27ca40; }
+
+.mockup-canvas {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+  padding: 20px;
+}
+
+.mockup-node {
+  position: absolute;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  animation: node-float 6s ease-in-out infinite;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.mockup-node-1 {
+  top: 15%; left: 8%;
+  background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(255,62,142,0.2));
+  border: 1px solid rgba(255,107,53,0.3);
+  color: #ff9a6c;
+  animation-delay: 0s;
+}
+
+.mockup-node-2 {
+  top: 10%; right: 15%;
+  background: linear-gradient(135deg, rgba(124,92,255,0.2), rgba(0,212,170,0.15));
+  border: 1px solid rgba(124,92,255,0.3);
+  color: #a994ff;
+  animation-delay: -1s;
+}
+
+.mockup-node-3 {
+  bottom: 30%; left: 25%;
+  background: rgba(255,62,142,0.15);
+  border: 1px solid rgba(255,62,142,0.25);
+  color: #ff7aab;
+  animation-delay: -2s;
+}
+
+.mockup-node-4 {
+  bottom: 15%; right: 10%;
+  background: rgba(0,212,170,0.12);
+  border: 1px solid rgba(0,212,170,0.25);
+  color: #5aebca;
+  animation-delay: -3s;
+}
+
+.mockup-node-5 {
+  top: 45%; left: 50%;
+  transform: translateX(-50%);
+  background: var(--gradient1);
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 14px 24px;
+  border: none;
+  animation-delay: -1.5s;
+}
+
+.mockup-line {
+  position: absolute;
+  background: rgba(255,255,255,0.06);
+  height: 1px;
+  transform-origin: left center;
+}
+
+.mockup-cursor {
+  position: absolute;
+  z-index: 5;
+}
+
+.mockup-cursor svg { width: 16px; height: 16px; }
+
+.cursor-label {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-left: 12px;
+  margin-top: -2px;
+  white-space: nowrap;
+}
+
+.mockup-cursor-1 {
+  top: 28%; left: 60%;
+  animation: cursor-move-1 8s ease-in-out infinite;
+}
+
+.mockup-cursor-1 .cursor-label { background: #ff6b35; color: #fff; }
+
+.mockup-cursor-2 {
+  top: 55%; left: 30%;
+  animation: cursor-move-2 10s ease-in-out infinite;
+}
+
+.mockup-cursor-2 .cursor-label { background: #7c5cff; color: #fff; }
+
+@keyframes cursor-move-1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-40px, 30px); }
+  50% { transform: translate(20px, -20px); }
+  75% { transform: translate(-10px, 10px); }
+}
+
+@keyframes cursor-move-2 {
+  0%, 100% { transform: translate(0, 0); }
+  30% { transform: translate(30px, -15px); }
+  60% { transform: translate(-20px, 25px); }
+}
+
+@keyframes node-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ========== SOCIAL PROOF BAR ========== */
+.social-proof {
+  padding: 80px 0;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: var(--bg2);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+
+.stat-item { opacity: 0; transform: translateY(20px); }
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--gradient1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.stat-item:nth-child(2) .stat-number { background: var(--gradient2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-item:nth-child(3) .stat-number { background: var(--gradient3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-item:nth-child(4) .stat-number { background: linear-gradient(135deg, #00d4aa, #ff6b35); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ========== PROBLEM ========== */
+.problem {
+  padding: 140px 0;
+  position: relative;
+}
+
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.section-label.gradient { background: var(--gradient1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.section-label.gradient2 { background: var(--gradient2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.section-label.gradient3 { background: var(--gradient3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  margin-top: 60px;
+}
+
+.pain-list { display: flex; flex-direction: column; gap: 20px; }
+
+.pain-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 24px;
+  background: rgba(255,62,142,0.04);
+  border: 1px solid rgba(255,62,142,0.08);
+  border-radius: 16px;
+  transition: all 0.3s;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.pain-item:hover {
+  background: rgba(255,62,142,0.08);
+  border-color: rgba(255,62,142,0.15);
+  transform: translateX(4px) !important;
+}
+
+.pain-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pain-text h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.pain-text p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.problem-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 380px;
+  opacity: 0.6;
+}
+
+.chat-bubble {
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  position: relative;
+}
+
+.chat-bubble::after {
+  content: '😴';
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.chat-big-x {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(255,62,142,0.15);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  z-index: 2;
+}
+
+/* ========== HOW IT WORKS ========== */
+.how-it-works {
+  padding: 140px 0;
+  background: var(--bg2);
+  position: relative;
+}
+
+.how-it-works::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,92,255,0.3), transparent);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 64px;
+}
+
+.step-card {
+  padding: 40px 32px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.step-card:hover {
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(-4px) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 3px;
+}
+
+.step-card:nth-child(1)::before { background: var(--gradient1); }
+.step-card:nth-child(2)::before { background: var(--gradient3); }
+.step-card:nth-child(3)::before { background: var(--gradient2); }
+
+.step-number {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 900;
+  opacity: 0.08;
+  position: absolute;
+  top: 16px; right: 24px;
+  line-height: 1;
+}
+
+.step-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.step-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.step-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ========== BENEFITS ========== */
+.benefits {
+  padding: 140px 0;
+  position: relative;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 64px;
+}
+
+.benefit-card {
+  padding: 36px 32px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  transition: all 0.4s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.benefit-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-2px) !important;
+}
+
+.benefit-card:nth-child(1) { border-left: 3px solid var(--accent); }
+.benefit-card:nth-child(2) { border-left: 3px solid var(--accent2); }
+.benefit-card:nth-child(3) { border-left: 3px solid var(--accent3); }
+.benefit-card:nth-child(4) { border-left: 3px solid var(--accent4); }
+.benefit-card:nth-child(5) { border-left: 3px solid #ffbd2e; }
+.benefit-card:nth-child(6) { border-left: 3px solid #ff5f56; }
+
+.benefit-emoji {
+  font-size: 2rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.benefit-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.benefit-card p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ========== USE CASES / PERSONAS ========== */
+.personas {
+  padding: 140px 0;
+  background: var(--bg2);
+  position: relative;
+}
+
+.personas::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,107,53,0.3), transparent);
+}
+
+.personas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 64px;
+}
+
+.persona-card {
+  padding: 32px 28px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.persona-card:nth-child(1) {
+  background: linear-gradient(160deg, rgba(255,107,53,0.08), rgba(255,62,142,0.04));
+  border: 1px solid rgba(255,107,53,0.12);
+}
+
+.persona-card:nth-child(2) {
+  background: linear-gradient(160deg, rgba(124,92,255,0.08), rgba(0,212,170,0.04));
+  border: 1px solid rgba(124,92,255,0.12);
+}
+
+.persona-card:nth-child(3) {
+  background: linear-gradient(160deg, rgba(255,62,142,0.08), rgba(124,92,255,0.04));
+  border: 1px solid rgba(255,62,142,0.12);
+}
+
+.persona-card:nth-child(4) {
+  background: linear-gradient(160deg, rgba(0,212,170,0.08), rgba(255,107,53,0.04));
+  border: 1px solid rgba(0,212,170,0.12);
+}
+
+.persona-card:nth-child(5) {
+  background: linear-gradient(160deg, rgba(255,189,46,0.08), rgba(255,107,53,0.04));
+  border: 1px solid rgba(255,189,46,0.12);
+}
+
+.persona-card:nth-child(6) {
+  background: linear-gradient(160deg, rgba(255,95,86,0.08), rgba(255,62,142,0.04));
+  border: 1px solid rgba(255,95,86,0.12);
+}
+
+.persona-card:hover { transform: translateY(-4px) !important; }
+
+.persona-icon { font-size: 2.2rem; margin-bottom: 16px; display: block; }
+
+.persona-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.persona-card p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* ========== FOUNDER QUOTE ========== */
+.founder-quote {
+  padding: 140px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.quote-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.quote-mark {
+  font-family: var(--font-display);
+  font-size: 8rem;
+  font-weight: 900;
+  background: var(--gradient1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 0.5;
+  display: block;
+  margin-bottom: 20px;
+  opacity: 0.4;
+}
+
+.quote-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin-bottom: 32px;
+}
+
+.quote-attribution {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.quote-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--gradient1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.quote-name {
+  text-align: left;
+}
+
+.quote-name strong {
+  font-weight: 700;
+  display: block;
+}
+
+.quote-name span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ========== FAQ ========== */
+.faq {
+  padding: 140px 0;
+  background: var(--bg2);
+}
+
+.faq-grid {
+  max-width: 780px;
+  margin: 64px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 28px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: color 0.3s;
+  user-select: none;
+}
+
+.faq-question:hover { color: var(--accent); }
+
+.faq-toggle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.faq-item.active .faq-toggle {
+  background: var(--gradient1);
+  color: #fff;
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.faq-answer-inner {
+  padding: 0 28px 22px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 300px;
+}
+
+/* ========== FINAL CTA ========== */
+.final-cta {
+  padding: 160px 0;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.final-cta-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+}
+
+.cta-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+}
+
+.cta-orb-1 {
+  width: 500px; height: 500px;
+  background: rgba(255,107,53,0.08);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cta-orb-2 {
+  width: 400px; height: 400px;
+  background: rgba(124,92,255,0.06);
+  top: 30%; left: 30%;
+}
+
+.final-cta-content {
+  position: relative;
+  z-index: 1;
+}
+
+.final-cta .section-title {
+  font-size: clamp(2.5rem, 5.5vw, 4rem);
+  margin-bottom: 20px;
+}
+
+.final-cta .hero-sub {
+  margin-bottom: 40px;
+  animation: none;
+  opacity: 1;
+}
+
+.final-cta .hero-ctas {
+  animation: none;
+  opacity: 1;
+}
+
+/* ========== FOOTER ========== */
+footer {
+  padding: 40px 0;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  text-align: center;
+}
+
+footer p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--text-muted);
+  transition: color 0.3s;
+}
+
+footer a:hover { color: var(--text); }
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 968px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+  .problem-grid { grid-template-columns: 1fr; gap: 48px; }
+  .steps-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .benefits-grid { grid-template-columns: 1fr; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .personas-grid { grid-template-columns: repeat(2, 1fr); }
+  .problem-visual { display: none; }
+}
+
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .personas-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2.5rem; }
+  .hero-ctas { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+  .section-title { font-size: 2rem; }
+  .problem, .how-it-works, .benefits, .personas, .founder-quote, .faq, .final-cta { padding: 80px 0; }
+}
+
+/* Mobile nav button */
+.mobile-nav-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .mobile-nav-btn { display: block; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">
+      <span class="logo-dot"></span>
+      Poppy
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#benefits">Benefits</a></li>
+      <li><a href="#personas">Use Cases</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://getpoppy.ai" class="btn-primary" style="padding:10px 24px; font-size:0.9rem;">Try Poppy Free →</a></li>
+    </ul>
+    <button class="mobile-nav-btn" onclick="document.querySelector('.nav-links').style.display = this.dataset.open ? 'none' : 'flex'; this.dataset.open = !this.dataset.open;">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        🔥 <span>8,000+ creators</span>&nbsp;already shipping faster
+      </div>
+      <h1>
+        Stop Staring at a<br>
+        <span class="gradient-text">Blinking Cursor.</span><br>
+        Start <span class="gradient-text-2">Thinking Visually.</span>
+      </h1>
+      <p class="hero-sub">
+        Poppy is the AI whiteboard where you drag in videos, images, PDFs — and build content the way your brain actually works. Not another boring chat window.
+      </p>
+      <div class="hero-ctas">
+        <a href="https://getpoppy.ai" class="btn-primary">Try Poppy Free →</a>
+        <a href="#how-it-works" class="btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          See How It Works
+        </a>
+      </div>
+      <p class="hero-guarantee">✅ <span>7-day money-back guarantee</span> · No contracts · Cancel anytime</p>
+    </div>
+
+    <!-- Hero Mockup -->
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-toolbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-canvas">
+          <div class="mockup-node mockup-node-1">📹 YouTube Script Ideas</div>
+          <div class="mockup-node mockup-node-2">📊 Q4 Strategy.pdf</div>
+          <div class="mockup-node mockup-node-3">🎙️ Voice Note — 2:34</div>
+          <div class="mockup-node mockup-node-4">📱 TikTok Hooks.txt</div>
+          <div class="mockup-node mockup-node-5">✨ Poppy AI — working on it...</div>
+
+          <!-- Multiplayer cursors -->
+          <div class="mockup-cursor mockup-cursor-1">
+            <svg viewBox="0 0 16 16" fill="#ff6b35"><path d="M0 0l6.5 16 2.3-6.2L16 6.5z"/></svg>
+            <div class="cursor-label">Rafeh</div>
+          </div>
+          <div class="mockup-cursor mockup-cursor-2">
+            <svg viewBox="0 0 16 16" fill="#7c5cff"><path d="M0 0l6.5 16 2.3-6.2L16 6.5z"/></svg>
+            <div class="cursor-label">Naz</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="social-proof">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-number">8,000+</div>
+        <div class="stat-label">Creators & Founders</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-number">200K</div>
+        <div class="stat-label">Token Context Window</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-number">100s</div>
+        <div class="stat-label">Of Hours Saved Weekly</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-number">4.9★</div>
+        <div class="stat-label">Average User Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <div class="section-label gradient">The Problem</div>
+    <div class="section-title reveal">ChatGPT Is a Glorified <br>Text Box. You Deserve Better.</div>
+    <div class="problem-grid">
+      <div class="pain-list">
+        <div class="pain-item">
+          <div class="pain-icon">💀</div>
+          <div class="pain-text">
+            <h4>Linear chat is a creative dead-end</h4>
+            <p>Your brain doesn't think in a single thread. Why should your AI? Scrolling through walls of text kills creativity.</p>
+          </div>
+        </div>
+        <div class="pain-item">
+          <div class="pain-icon">🤖</div>
+          <div class="pain-text">
+            <h4>Everything sounds like an AI wrote it</h4>
+            <p>"In today's fast-paced world..." — Nobody talks like that. You need AI that writes in YOUR voice, not cringe corporate-speak.</p>
+          </div>
+        </div>
+        <div class="pain-item">
+          <div class="pain-icon">🧩</div>
+          <div class="pain-text">
+            <h4>Your ideas are scattered across 14 tabs</h4>
+            <p>YouTube research here, notes there, PDFs somewhere else. You need one space where everything connects.</p>
+          </div>
+        </div>
+        <div class="pain-item">
+          <div class="pain-icon">👻</div>
+          <div class="pain-text">
+            <h4>Working alone with AI is lonely</h4>
+            <p>No way to collaborate with your team in ChatGPT. It's a single-player game in a multiplayer world.</p>
+          </div>
+        </div>
+      </div>
+      <div class="problem-visual">
+        <div class="chat-stack">
+          <div class="chat-bubble">User: Write me a script about...</div>
+          <div class="chat-bubble">AI: In today's fast-paced world, it's important to consider the multifaceted nature of...</div>
+          <div class="chat-bubble">User: No, that's not my voice...</div>
+          <div class="chat-bubble">AI: I apologize for the confusion. Let me try again. In our ever-evolving landscape...</div>
+          <div class="chat-bubble">User: 😐</div>
+        </div>
+        <div class="chat-big-x">✕</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label gradient2">How It Works</div>
+      <div class="section-title reveal">Three Steps to<br><span style="background:var(--gradient2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Creative Superpowers</span></div>
+      <p style="color:var(--text-muted);max-width:560px;margin:0 auto;font-size:1.05rem;" class="reveal">No learning curve. No complex setup. Just drag, drop, and let AI do the heavy lifting.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <span class="step-icon">🎯</span>
+        <h3>Drag In Everything</h3>
+        <p>YouTube videos, TikToks, IG Reels, PDFs, images, voice notes — throw it all on your whiteboard. Poppy understands it all.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <span class="step-icon">🧠</span>
+        <h3>Think Visually with AI</h3>
+        <p>Connect ideas spatially. Branch out. Go non-linear. Poppy's AI (Claude + ChatGPT) sees your whole board and gets the context — all 200K tokens of it.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <span class="step-icon">🚀</span>
+        <h3>Ship Content That Slaps</h3>
+        <p>Generate scripts, tweets, newsletters, strategies — in YOUR voice. Collaborate with your team in real-time, Figma-style. Then publish and watch it perform.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label gradient">Why Creators Are Obsessed</div>
+      <div class="section-title reveal">Everything You Wished <br>ChatGPT Could Do</div>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <span class="benefit-emoji">🎨</span>
+        <h3>Visual, Non-Linear Thinking</h3>
+        <p>Arrange ideas spatially like sticky notes on a whiteboard. Your ADHD brain will thank you. No more scrolling through endless chat logs.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-emoji">👥</span>
+        <h3>Real-Time Multiplayer</h3>
+        <p>Invite your team, co-founder, or VA to collaborate live — just like Figma. See their cursors, edits, and ideas unfold in real time.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-emoji">🗣️</span>
+        <h3>Writes In YOUR Voice</h3>
+        <p>No more "As an AI language model..." — Poppy learns how you write and creates content that sounds like you actually wrote it. Zero cringe.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-emoji">📎</span>
+        <h3>Drag In Any Media</h3>
+        <p>YouTube, TikTok, IG Reels, PDFs, voice memos, images — drag it onto your board. Poppy processes and understands all of it instantly.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-emoji">🔮</span>
+        <h3>200K Token Context</h3>
+        <p>Powered by Claude + ChatGPT. Massive context window means Poppy actually remembers your entire project — not just the last 3 messages.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-emoji">⚡</span>
+        <h3>10x Content Output</h3>
+        <p>From research to script to publish — what used to take 8 hours now takes 45 minutes. That's not hype, that's math from 8,000+ creators.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAS -->
+<section class="personas" id="personas">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label gradient3">Built For You</div>
+      <div class="section-title reveal">Whether You're a Creator,<br>Founder, or <span style="background:var(--gradient3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Beautiful Weirdo</span></div>
+    </div>
+    <div class="personas-grid">
+      <div class="persona-card">
+        <span class="persona-icon">🎬</span>
+        <h3>YouTubers & Video Creators</h3>
+        <p>Research, scriptwriting, and thumbnail brainstorms — all on one visual board. Turn a 2-hour workflow into 20 minutes.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-icon">📱</span>
+        <h3>Short-Form Content Creators</h3>
+        <p>Drag in trending TikToks and Reels, extract what works, and generate your own viral hooks — with AI that gets the algorithm.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-icon">🚀</span>
+        <h3>Startup Founders</h3>
+        <p>Strategy sessions, pitch deck brainstorms, investor update drafts — collaborate with your co-founder in real time on the AI whiteboard.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-icon">📈</span>
+        <h3>Marketers & Agencies</h3>
+        <p>Campaign planning, copy iterations, content calendars — manage it all visually and let AI handle the heavy lifting.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-icon">🧠</span>
+        <h3>ADHD & Neurodivergent Thinkers</h3>
+        <p>Your brain is non-linear. Poppy is too. Finally an AI tool built for how you actually think — spatial, visual, and fast.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-icon">✍️</span>
+        <h3>Newsletter Writers & Bloggers</h3>
+        <p>Collect research, organize thoughts, and draft — all visually. Poppy writes in your voice so readers can't tell the difference.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER QUOTE -->
+<section class="founder-quote">
+  <div class="container">
+    <div class="quote-wrapper">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">We built Poppy because we were tired of AI that makes you think like a robot. Your brain is a whiteboard, not a chat log. We made the tool we wished existed — and now 8,000+ creators use it every single day.</p>
+      <div class="quote-attribution">
+        <div class="quote-avatar">RQ</div>
+        <div class="quote-name">
+          <strong>Rafeh Qazi</strong>
+          <span>Co-Founder, Poppy AI · @rafaborz</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label gradient">FAQ</div>
+      <div class="section-title reveal">Got Questions?<br>We Got Answers.</div>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How is Poppy different from ChatGPT?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">ChatGPT is a text box. Poppy is a visual whiteboard. You can drag in videos, images, PDFs, and voice notes — then work with AI spatially, not linearly. Plus, it's multiplayer (think Figma meets AI), has a 200K token context window, and actually writes in your voice. It's like comparing a flip phone to an iPhone.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What AI models power Poppy?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Poppy is powered by both Claude and ChatGPT under the hood. We use the best model for each task so you get the highest quality output. You get a massive 200K token context window — meaning the AI actually remembers your entire project, not just the last few messages.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Is there a free trial?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Yes! You can try Poppy for free. And if you upgrade, there's a 7-day money-back guarantee — no questions asked. We're confident you'll love it because 8,000+ creators already do.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Can I collaborate with my team?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Absolutely. Poppy has real-time multiplayer collaboration — just like Figma or Google Docs. You can see your teammates' cursors, edits, and ideas in real time. It's the only AI tool built for teams from day one.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What can I drag into the whiteboard?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Pretty much anything — YouTube videos, TikToks, Instagram Reels, PDFs, images, voice notes, text files, links, and more. Poppy ingests and understands the content so the AI can reference it contextually when generating output for you.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Is Poppy good for ADHD / neurodivergent thinkers?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">It's practically built for you. Traditional AI chat forces linear thinking, which is torture for non-linear brains. Poppy's spatial whiteboard lets you branch out, move ideas around, and work the way your brain naturally wants to. Many of our most passionate users are neurodivergent thinkers.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-bg">
+    <div class="cta-orb cta-orb-1"></div>
+    <div class="cta-orb cta-orb-2"></div>
+  </div>
+  <div class="container">
+    <div class="final-cta-content reveal">
+      <div class="section-title">Your Brain Isn't a Chat Log.<br><span style="background:var(--gradient1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Give It a Whiteboard.</span></div>
+      <p class="hero-sub">Join 8,000+ creators, founders, and thinkers who ditched boring AI chat for the visual AI whiteboard that actually gets it.</p>
+      <div class="hero-ctas">
+        <a href="https://getpoppy.ai" class="btn-primary" style="padding:18px 44px;font-size:1.1rem;">Try Poppy Free →</a>
+      </div>
+      <p class="hero-guarantee" style="opacity:1;animation:none;margin-top:16px;">✅ <span>7-day money-back guarantee</span> · Bootstrapped & profitable · Made with 🔥 by creators, for creators</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <a href="#" class="logo" style="justify-content:center;margin-bottom:16px;display:inline-flex;">
+        <span class="logo-dot"></span> Poppy
+      </a>
+    </p>
+    <p>© 2025 Poppy AI (getpoppy.ai) · Built by <strong>Rafeh Qazi</strong> & <strong>Naz Dumanskyy</strong></p>
+    <p style="margin-top:4px;">
+      <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Twitter</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// FAQ toggle
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isActive = item.classList.contains('active');
+  // Close all
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+  if (!isActive) item.classList.add('active');
+}
+
+// Intersection Observer — reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Stagger children if they have reveal class
+      const children = entry.target.querySelectorAll('.reveal:not(.visible)');
+      children.forEach((child, i) => {
+        setTimeout(() => child.classList.add('visible'), i * 100);
+      });
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+// Observe all reveal elements
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Also observe special animated elements
+const specialObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const items = entry.target.querySelectorAll('.stat-item, .pain-item, .step-card, .benefit-card, .persona-card, .faq-item');
+      items.forEach((item, i) => {
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0) translateX(0)';
+          item.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        }, i * 80);
+      });
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.stats-grid, .pain-list, .steps-grid, .benefits-grid, .personas-grid, .faq-grid').forEach(el => {
+  specialObserver.observe(el);
+});
+
+// Quote section
+const quoteObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      entry.target.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.quote-wrapper').forEach(el => quoteObserver.observe(el));
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Parallax orbs on mouse move (subtle)
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  document.querySelectorAll('.hero-orb').forEach((orb, i) => {
+    const speed = (i + 1) * 0.5;
+    orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+  });
+});
+</script>
+
+</body>
+</html>
